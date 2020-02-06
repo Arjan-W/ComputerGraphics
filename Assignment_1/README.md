@@ -11,4 +11,4 @@ The following ten changes were made to the game:
 7. We made the large bot to be an "end boss" by increasing its max health from 100 to 500.
 8. We changed the gravity in the game from 20 to 40.
 9. We added a health object on top of the altar.
-10. We made the large bot stronger by changing its bullets per shot from 1 to 2, changing the delay between shots from 0.8 to 0.5, and changing the bullet spread angle from 0 to 25.
+10. We made the large bot stronger by changing its bullets per shot from 1 to 2 and changing the delay between shots from 0.8 to 0.5.
