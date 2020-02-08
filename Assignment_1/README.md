@@ -12,3 +12,16 @@ The following ten changes were made to the game:
 8. We changed the gravity in the game from 20 to 40.
 9. We added a health object on top of the altar.
 10. We made the large bot stronger by changing its bullets per shot from 1 to 2 and changing the delay between shots from 0.8 to 0.5.
+
+## KartGame
+The following ten changes were made to the game:
+1. We set the top speed from 25 to 50.
+2. We changed the colour of the cart from blue to yellow.
+3. We added an extra BuildingShort to the scene.
+4. We added an extra BuildingMedium to the scene.
+5. We increased the size of the kart from 1 to 1.5.
+6. We increased the size of some stones in the environment.
+7. We set the acceleration of the kart from 5 to 10.
+8. We increased the hop height from 4 to 8.
+9. We edited the text in the instructions screen from "[This is your First Menu Screen] The controls for this template are:" to "Instructions for the game"
+10. We changed the title (header) of the game from "Kart Game Template" to "KartGekkies"
