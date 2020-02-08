@@ -7,8 +7,8 @@ https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/FPSGame/Bui
 Link to the build of microgame 2 - KartGame:
 https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/KartGame/Build
 
-Link to the build of microgame 3 - ...:
-https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/.../Build
+Link to the build of microgame 3 - PlatformerGame:
+https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/PlatformerGame/Build
 
 Link to made changes: https://github.com/Arjan-W/ComputerGraphics/blob/master/Assignment_1/README.md
 
@@ -37,5 +37,15 @@ KartGame
 9. We edited the text in the instructions screen from "[This is your First Menu Screen] The controls for this template are:" to "Instructions for the game"
 10. We changed the title (header) of the game from "Kart Game Template" to "KartGekkies"
 
-...
-1. ...
+PlatformerGame
+The following ten changes were made to the game:
+1. We changed the max speed of the player from 3 to 5.
+2. We moved the position of a token so it aligned with an enemy.
+3. We changed the player objects color to orange to contrast the blue of the game.
+4. We added an aditional enemy to the start of the level. 
+5. We added an aditional enemy to the end of the level.
+6. We changed the extra enemy at the end of the level to have 3x the normal size.
+7. We changed gave the extra enemy at the end of the level a partol path to patrol.
+8. We changed the max speed of the extra enemy at the end of the level from 7 to 5. 
+9. We added three extra tokens at the end of the level.
+10. We changed the three extra tokens at the end of the level to be green instead of yellow.
