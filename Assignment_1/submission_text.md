@@ -2,13 +2,13 @@
 Please update the text below and copy-paste as plain text submission on Brightspace:
 
 Link to the build of microgame 1 - FPSGame:
-https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/FPSGame/Build
+https://arjan-w.github.io/ComputerGraphics/Assignment_1/FPSGame/
 
 Link to the build of microgame 2 - KartGame:
-https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/KartGame/Build
+https://arjan-w.github.io/ComputerGraphics/Assignment_1/KartGame/Build/KartGekkies/
 
 Link to the build of microgame 3 - PlatformerGame:
-https://github.com/Arjan-W/ComputerGraphics/tree/master/Assignment_1/PlatformerGame/Build
+https://arjan-w.github.io/ComputerGraphics/Assignment_1/PlatformerGame/
 
 Link to made changes: https://github.com/Arjan-W/ComputerGraphics/blob/master/Assignment_1/README.md
 
