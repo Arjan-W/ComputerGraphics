@@ -10,5 +10,10 @@ The repository consists of the following folders:
     - Build
   - PlatformerGame
     - Build
+    
+- Assignment 2:
+  - Lab03
+    - Project
+    - Build
 
 Note that all Project files only contain the 'Assets' and 'ProjectSettings' folders. Unity will automatically generate the other necessary files.
