@@ -9,7 +9,7 @@ The repository consists of the following folders:
     
 - Assignment 2:
   - Lab03
-    - Breakout - (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_2/Lab03/Build/]
+    - Breakout - [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_2/Lab03/Build/)
     - Tutorial (Scripts)
 
 Note that all Project files only contain the 'Assets' and 'ProjectSettings' folders. Unity will automatically generate the other necessary files.
