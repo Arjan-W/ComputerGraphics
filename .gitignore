@@ -1,6 +1,4 @@
-Assignment_1/Platformer/
-Assignment_1/Lab02/
-**/Lab*/*
-!**/Lab*/Build/
-!**/Lab*/Assets/
-!**/Lab*/ProjectSettings/
+**/Assignment_*/*/*
+!**/Assignment_*/*/Build/
+!**/Assignment_*/*/Assets/
+!**/Assignment_*/*/ProjectSettings/
