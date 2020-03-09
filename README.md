@@ -2,12 +2,14 @@
 
 Here you can find the assignments of group 4 in SOW-MKI95 Computer Graphics & Computer Vision.
 The repository consists of the following folders:
+
 - Assignment 1:
-  - FPSGame - [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_1/FPSGame/)
-  - KartGame - [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_1/KartGame/Build/KartGekkies/)
-  - PlatformerGame [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_1/PlatformerGame/)
+  - FPSGame - (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_1/FPSGame/index.html]
+  - KartGame - (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_1/KartGame/Build/KartGekkies/index.html]
+  - PlatformerGame - (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_1/PlatformerGame/index.html]
     
 - Assignment 2:
+<<<<<<< HEAD
   - Lab03
     - Breakout - (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_2/Lab03/Build/]
     - Tutorial (Scripts)
@@ -15,5 +17,17 @@ The repository consists of the following folders:
 - Assignment 3:
   - Snow environment (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_3/SnowShader/Build/index.html]
   - Eyes environment (Link)[https://arjan-w.github.io/ComputerGraphics/Assignment_3/Lab05/Build/index.html]
+=======
+  - Breakout
+    - Project
+    - Build
+  - Tutorial
+    - .cs files
+
+- Assignment 3:
+  - SnowShader
+    - Project
+    - Build
+>>>>>>> 6ca6441b43f96bb8800064db9f5260d44730a041
 
 Note that all Project files only contain the 'Assets' and 'ProjectSettings' folders. Unity will automatically generate the other necessary files.
