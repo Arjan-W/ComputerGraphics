@@ -1,0 +1,35 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTextureTexture2D<float4> _ColorGradient;
+Texture2D<float4> _ColorGradient;
+SamplerState sampler_ColorGradient;
+RWTexture2D<float4> _MandelbrotSet;
+int _Iterations;
+int _Width;
+int _Height;
+float _Bailout;
+float _Left;
+float _Right;
+float _Top;
+float _Bottom;
+
+float EscapeTime(float2 c) {
+	float2 z = 0;
+	for (int i = 0; i < _Iterations; i++) {
+		z = float2(z.x * z.x - z.y * z.y + c.x, 2 * z.x * z.y + c.y);
+		if (length(z) > _Bailout) break; 
+	}
+	float  escapeTime = i / float(_Iterations);
+	return escapeTime;
+}
+
+[numthreads(8,8,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	float x = (_Right - _Left) * (id.x / float(_Width)) + _Left;
+	float y = (_Bottom - _Top) * (id.y / float(_Height)) + _Top;
+	float escapeTime = EscapeTime(float2(x, y));
+	float4 color = _ColorGradient.SampleLevel(sampler_ColorGradient, float2(escapeTime, 0), 0);
+	_MandelbrotSet[id.xy] = color;
+}
