@@ -47,7 +47,6 @@ namespace Mandelbrod.Assets.Scripts {
             renderTexture.Release();
         }
 
-
         private void Update() {
             if ((Input.GetButtonDown("Fire1") || Input.GetButtonDown("Fire2")) && zoom) {
                 var width = right - left;
