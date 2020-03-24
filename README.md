@@ -14,7 +14,10 @@ The repository consists of the following folders:
     - Tutorial (Scripts)
 	
 - Assignment 3:
-  - Snow environment [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_3/SnowShader/Build/index.html)
-  - Eyes environment [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_3/Lab05/Build/index.html)
+  - Snow environment - [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_3/SnowShader/Build/index.html)
+  - Eyes environment - [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_3/Lab05/Build/index.html)
+
+- Assignment 4:
+  - Mandelbrod
 
 Note that all Project files only contain the 'Assets' and 'ProjectSettings' folders. Unity will automatically generate the other necessary files.
