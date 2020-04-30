@@ -39,7 +39,7 @@ public class Script01 : MonoBehaviour
     private void GenerateLandscape() {
         // First, initialize the data structures:
         var colors = new Color[resolution * resolution];
-        var triangles = new int[(resolution * resolution - 2) * 6];
+        var triangles = new int[(resolution-1) * (resolution-1) * 6];
         var vertices = new Vector3[resolution * resolution];
                     
         int j = 0;
