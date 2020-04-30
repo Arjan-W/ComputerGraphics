@@ -38,18 +38,33 @@ public class Script01 : MonoBehaviour
 
     private void GenerateLandscape() {
         // First, initialize the data structures:
-        var colors = new Color[_mesh.vertices.Length];
-        var triangles = new int[_mesh.triangles.Length * 2];
-        var vertices = new Vector3[_mesh.vertices.Length];
-      
+        var colors = new Color[resolution * resolution];
+        var triangles = new int[(resolution * resolution - 2) * 6];
+        var vertices = new Vector3[resolution * resolution];
+                    
+        int j = 0;
+        
         // Then, loop over the vertices and populate the data structures:
-        for (var i = 0; i < _mesh.vertices.Length; i++) {
-            Vector3 v = _mesh.vertices[i];
-            var coords = new Vector2((float) v.x / (resolution - 1), (float) v.z / (resolution - 1));
+        for (var i = 0; i < vertices.Length; i++) {
+
+            float x = Mathf.Floor(i / length);
+            float z = i % length; 
+            var coords = new Vector2((float) x / (resolution - 1), (float) z / (resolution - 1));
             var elevation = 1.414214f * FractalNoise(coords, gain, lacunarity, octaves, scale, shift, state);
             colors[i]   = gradient.Evaluate(elevation);
             vertices[i] = new Vector3(length * coords.x, height * elevation, length * coords.y);
-            triangles[i]= i;
+
+            if(i % resolution != resolution-1 && i < (resolution*resolution)-resolution){
+                triangles[6*j]= i;
+                triangles[6*j + 1] = i + 1;
+                triangles[6*j + 2] = i + resolution;  
+
+                triangles[6*j + 3] = i + resolution + 1;
+                triangles[6*j + 4] = i + resolution;
+                triangles[6*j + 5] = i + 1;
+
+                j++;
+            }
         }
 
         // Assign the data structures to the mesh
@@ -61,13 +76,12 @@ public class Script01 : MonoBehaviour
     }
 
     private static float FractalNoise(Vector2 coords, float gain, float lacunarity, int octaves, float scale, Vector2 shift, int state) {
-        /*
-        * Tip:
-        * Here, you can use the built-in Perlin noise implementation for each octave:
-        * Mathf.PerlinNoise(x, y); such that:
-        * x = coords.x * frequency.x * scale + some random number (seeded by state at the beginning) + shift.x; and
-        * y = coords.y * frequency.y * scale + some random number (seeded by state at the beginning) + shift.y; and
-        */
-        throw new NotImplementedException();
+        // Tip:
+        // Here, you can use the built-in Perlin noise implementation for each octave:
+        // Mathf.PerlinNoise(x, y); such that:
+        Random.InitState(state);
+        float x = coords.x * lacunarity * scale + Random.value + shift.x;
+        float y = coords.y * lacunarity * scale + Random.value + shift.y;
+        return Mathf.PerlinNoise(x, y);
     }
 }
