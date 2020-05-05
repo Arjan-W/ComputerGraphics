@@ -51,7 +51,7 @@ public class Script01 : MonoBehaviour
             float z = i % length; 
             var coords = new Vector2((float) x / (resolution - 1), (float) z / (resolution - 1));
             var elevation = 1.414214f * FractalNoise(coords, gain, lacunarity, octaves, scale, shift, state);
-            colors[i]   = gradient.Evaluate(elevation);
+            colors[i]   = gradient.Evaluate(elevation + 0.5f);
             vertices[i] = new Vector3(length * coords.x, height * elevation, length * coords.y);
 
             if(i % resolution != resolution-1 && i < (resolution*resolution)-resolution){
@@ -80,8 +80,13 @@ public class Script01 : MonoBehaviour
         // Here, you can use the built-in Perlin noise implementation for each octave:
         // Mathf.PerlinNoise(x, y); such that:
         Random.InitState(state);
-        float x = coords.x * lacunarity * scale + Random.value + shift.x;
-        float y = coords.y * lacunarity * scale + Random.value + shift.y;
-        return Mathf.PerlinNoise(x, y);
+        float noise = 0f;
+        for (int oct=0; oct < octaves; oct++) {
+            float x = coords.x * Mathf.Pow(lacunarity, oct) * scale + Random.value + shift.x;
+            float y = coords.y * Mathf.Pow(lacunarity, oct) * scale + Random.value + shift.y;
+            noise += (Mathf.PerlinNoise(x, y) - 0.5f) * Mathf.Pow(gain, oct); // -0.5 to modulate around 0. This prevents the terrain from going higher with every ocatve.
+        }
+        return noise;
+
     }
 }
