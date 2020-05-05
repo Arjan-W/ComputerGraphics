@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -11,16 +13,16 @@ public class Script01 : MonoBehaviour
     private Mesh _mesh;
     [SerializeField] private Gradient gradient;
 
-    [Range(0, 1)] [SerializeField] private float gain = 0.5f;
-    [Range(1, 3)] [SerializeField] private float lacunarity = 2f;
-    [Range(1, 8)] [SerializeField] private int octaves = 4;
+    [Range(0, 1)] [SerializeField] public float gain = 0.5f;
+    [Range(1, 3)] [SerializeField] public float lacunarity = 2f;
+    [Range(1, 8)] [SerializeField] public int octaves = 4;
 
-    [SerializeField] private float scale = 5f;
-    [SerializeField] private Vector2 shift = Vector2.zero;
-    [SerializeField] private int state = 0;
-    [SerializeField] private int resolution = 256;
-    [SerializeField] private float length = 256f;
-    [SerializeField] private float height = 50f;
+    [SerializeField] public float scale = 5f;
+    [SerializeField] public Vector2 shift = Vector2.zero;
+    [SerializeField] public int state = 0;
+    [SerializeField] public int resolution = 256;
+    [SerializeField] public float length = 256f;
+    [SerializeField] public float height = 50f;
 
     private void Awake() {
         (GetComponent<MeshFilter>().mesh = _mesh = new Mesh {name=name}).MarkDynamic();
@@ -89,4 +91,14 @@ public class Script01 : MonoBehaviour
         return noise;
 
     }
+
+    public void UpdateGain(float value) {gain = value; OnValidate(); Update(); }
+    public void UpdateLacunarity(float value) {lacunarity = value; OnValidate(); Update(); }
+    public void UpdateOctaves(int value) {octaves = value; OnValidate(); Update(); }
+    public void UpdateScale(float value) {scale = value; OnValidate(); Update(); }
+    public void UpdateShift(Vector2 value) {shift = value; OnValidate(); Update(); }
+    public void UpdateState(int value) {state = value; OnValidate(); Update(); }
+    public void UpdateResolution(int value) {resolution = value; OnValidate(); Update(); }
+    public void UpdateLength(float value) {length = value; OnValidate(); Update(); }
+    public void UpdateHeight(float value) {height = value; OnValidate(); Update(); }
 }

@@ -2,32 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnTable : MonoBehaviour
+public class TurnTable : MonoBehaviour 
 {
-    public float Radius;
-    public float Speed;
+    public Vector3 focus_point = new Vector3(0, 0, 0);
+    public Vector3 offset = new Vector3(0, 0, 0);
+    public Vector3 amplitude = new Vector3(150, 50, 150);
+    public Vector3 speed = new Vector3(10, 0, 10);
+    private float zoom_speed = 0.1f;
 
-    private float rot = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-        gameObject.transform.position = new Vector3(0f, 60f, Radius);
-        gameObject.transform.Rotate(new Vector3(20f, 180f, 0f), Space.World);
+    void Start() {
+        if (speed.x != 0) { speed.x = 1 / speed.x; }
+        if (speed.y != 0) { speed.y = 1 / speed.y; }
+        if (speed.z != 0) { speed.z = 1 / speed.z; }
+        Vector3 cam_pos = get_pos();
+        gameObject.transform.position = get_pos();
+        gameObject.transform.rotation = get_angles(focus_point, cam_pos);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        float step = Mathf.Sin(Time.deltaTime * Speed);
-        rot += step;
-        rot = rot % 360;
+    void Update() {
+        // Always change the amplitude if scrolled
+        amplitude -= amplitude * zoom_speed * Input.mouseScrollDelta[1];  
 
-        float x = Mathf.Sin((rot * Mathf.PI) / 180) * Radius;
-        float z = Mathf.Cos((rot * Mathf.PI) / 180) * Radius;
+        Vector3 cam_pos = get_pos();
+        // Update position and rotation
+        gameObject.transform.position = cam_pos;
+        gameObject.transform.rotation = get_angles(focus_point, cam_pos);
+    }
 
-        gameObject.transform.position = new Vector3(x, 60f, z);
-        gameObject.transform.Rotate(new Vector3(0f, step, 0f), Space.World);
-        
+    private Vector3 get_pos() {
+        Vector3 time = Time.time * speed * 2 * Mathf.PI;
+        Vector3 pos = new Vector3(Mathf.Sin(time.x), Mathf.Sin(time.y), Mathf.Cos(time.z));
+        pos = Vector3.Scale(pos, amplitude);
+        return focus_point + pos + offset;
+    }
+
+    private Quaternion get_angles(Vector3 cd, Vector3 co) {
+        Vector3 d = cd - co;
+        return Quaternion.LookRotation(d.normalized);
     }
 }
