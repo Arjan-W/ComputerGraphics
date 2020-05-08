@@ -22,4 +22,7 @@ The repository consists of the following folders:
   - Mandelbrotset [Link](https://arjan-w.github.io/ComputerGraphics/Assignment_4/Mandelbrotset/Build/index.html)
     > Left click to zoom in, Right click to reset to original state
 
+- Assignment 5:
+  - Landschape_Generation - (Failed to create a WebGL build for Github)
+
 Note that all Project files only contain the 'Assets' and 'ProjectSettings' folders. Unity will automatically generate the other necessary files.
