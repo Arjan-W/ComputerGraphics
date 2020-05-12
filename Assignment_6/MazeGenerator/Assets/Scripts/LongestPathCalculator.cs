@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
  
-namespace LongestPathCalculator
+namespace MazeGenerator.Assest.Scripts.LongestPathCalculator
 {
     /* Code inspired by https://www.csharpstar.com/dijkstra-algorithm-csharp/. Referenced on May 8, 2020.
     
@@ -31,7 +31,7 @@ namespace LongestPathCalculator
  
             for (int v = 0; v < verticesCount; ++v)
             {
-                if (shortestPathTreeSet[v] == false && distance[v] => max)
+                if (longestPathTreeSet[v] == false && distance[v] >= max)
                 {
                     max = distance[v];
                     maxIndex = v;
@@ -75,4 +75,5 @@ namespace LongestPathCalculator
  
             Print(distance, verticesCount);
         }
+    }
 }
