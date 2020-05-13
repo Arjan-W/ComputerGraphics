@@ -28,6 +28,8 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             Dropdown algorithm_options = algorithm.transform.Find("Algorithms").GetComponent<Dropdown>();
             algorithm_options.ClearOptions();
             algorithm_options.AddOptions(new List<string> {"Binary Tree"});
+            algorithm_options.AddOptions(new List<string> {"Aldous-Broder"});
+             algorithm_options.AddOptions(new List<string> {"Sidewinder"});
 
             // Add callback to generate
             generate.transform.Find("GenerateButton").GetComponent<Button>().onClick.AddListener(delegate() {Start();} );
@@ -43,6 +45,8 @@ namespace MazeGenerator.Assest.Scripts.UIController{
 
             // Run algorithm
             if (alg == 0) { maze_gen.BinaryTree(cols, rows); }
+            if (alg == 1) { maze_gen.AldousBroder(cols, rows); }
+            if (alg == 2) { maze_gen.SideWinder(cols, rows); }
         }
 
     }

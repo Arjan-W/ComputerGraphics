@@ -32,6 +32,7 @@ namespace MazeGenerator.Assest.Scripts {
         }
 
         public void BinaryTree(int cols=15, int rows=10) {
+            print("Bin!");
             // Make grid
             MakeGrid(cols, rows);
             // For each cell carve either north or east
@@ -46,7 +47,105 @@ namespace MazeGenerator.Assest.Scripts {
             }
         }
 
-        
+        public void AldousBroder(int cols=5, int rows=5) {
+            // Make grid
+            print("1!");
+            MakeGrid(cols, rows);
+            print("2!");
+            // Choose random point to start
+            int r = UnityEngine.Random.Range(0, rows-1);
+            int c = UnityEngine.Random.Range(0, cols-1);
+            print("r: " + r + ", c: " + c);
+            // Count nr of remaining cells
+            int[,] visited = new int[rows,cols];
+            print("visited: " + visited[0,0]);
+            visited[r,c] = 1;
+            print("visited: " + visited[0,0]);
+            int remaining = rows*cols-1;
+            print("remaining: " + remaining);
+            // Loop until all cells visited
+            while (remaining > 0) {
+                // Pick random direction
+                print("Keep going!");
+                float choice = UnityEngine.Random.Range(0,3);
+                print("choice: " + choice);
+                // Up
+                if (choice  == 0 && r < rows-1) {
+                    r++;
+                    print("Up!");
+                    if(visited[r,c] != 1) {
+                        RemoveWall(r-1, c, "Up"); 
+                        remaining--;
+                        visited[r,c] = 1;
+                        print("Up carve! Remaining is: " + remaining);
+                    }
+                }
+                // Down
+                else if (choice == 1 && r > 0) {
+                    r--;
+                    print("Down!");
+                    if (visited[r,c] != 1){
+                        RemoveWall(r+1, c, "Down"); 
+                        remaining--; 
+                        visited[r,c] = 1; 
+                        print("Down carve! Remaining is: " + remaining);
+                    }
+                }
+                // Left
+                else if (choice == 2 && c > 0) {
+                    c--;
+                    print("Left!");
+                    if (visited[r,c] != 1) {
+                        RemoveWall(r, c+1, "Left"); 
+                        remaining--;
+                        visited[r,c] = 1;
+                        print("Left carve! Remaining is: " + remaining);
+                    }       
+                }
+                // Right
+                else if (choice == 3 && c < rows-1) {
+                    c++;
+                    print("Right!");
+                    if (visited[r,c] != 1){
+                        RemoveWall(r, c-1, "Right"); 
+                        remaining--; 
+                        visited[r,c] = 1;
+                        print("Right carve! Remaining is: " + remaining);
+                    } 
+                }
+
+            }
+
+        }
+
+        public void SideWinder(int cols=15, int rows=15)
+        {
+            // Make grid
+            MakeGrid(cols, rows);
+            // For each cell carve either north or east
+            for (int r=0; r < rows; r++) {
+                int run_start = 0;
+                for (int c=0; c < cols; c++) {
+                    // If not on bottom row (can't go down there)
+                    // and (either already right column or random select down)
+                    if (r > 0 && (c+1 == cols || UnityEngine.Random.Range(0,2) == 1)){
+                        // End current run
+                        // Randomly choose cell from current run set
+                        int cell = run_start + UnityEngine.Random.Range(0, c - run_start + 1);
+                        // Carve down from it
+                        RemoveWall(r, cell, "Down"); 
+                        run_start = c+1;
+
+                    }
+                    // If not already in most right column
+                    else if (c+1 < cols) {
+                        // Carve east
+                        RemoveWall(r, c, "Right");
+                    }
+                }
+            }
+        }
+
         public void MakeGrid(int cols=15, int rows=10) {
             // Store grid size
             grid_size = new Vector2Int(cols, rows);
