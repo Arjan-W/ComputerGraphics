@@ -4,6 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace MazeGenerator.Assest.Scripts {
+
+    public class Step {
+        public int r;
+        public int c;
+        public string dir;
+
+        public Step(int r, int c, string dir){
+            this.r = r;
+            this.c = c;
+            this.dir = dir;
+        }
+    }
+    
     public class MazeGenerator : MonoBehaviour
     {
         public GameObject cell_prefab;
@@ -49,73 +62,190 @@ namespace MazeGenerator.Assest.Scripts {
 
         public void AldousBroder(int cols=5, int rows=5) {
             // Make grid
-            print("1!");
             MakeGrid(cols, rows);
-            print("2!");
+            
             // Choose random point to start
-            int r = UnityEngine.Random.Range(0, rows-1);
-            int c = UnityEngine.Random.Range(0, cols-1);
-            print("r: " + r + ", c: " + c);
-            // Count nr of remaining cells
+            int r = UnityEngine.Random.Range(0, rows);
+            int c = UnityEngine.Random.Range(0, cols);
+
+            // Initialize matrix of visited cells
             int[,] visited = new int[rows,cols];
-            print("visited: " + visited[0,0]);
             visited[r,c] = 1;
-            print("visited: " + visited[0,0]);
+
+            // Initialize remaining nr of cells
             int remaining = rows*cols-1;
-            print("remaining: " + remaining);
             // Loop until all cells visited
+            
             while (remaining > 0) {
                 // Pick random direction
-                print("Keep going!");
-                float choice = UnityEngine.Random.Range(0,3);
-                print("choice: " + choice);
+                float choice = UnityEngine.Random.Range(0,4);
                 // Up
                 if (choice  == 0 && r < rows-1) {
+                    // Always move to cell
                     r++;
-                    print("Up!");
+                    // If not visited, also carve
                     if(visited[r,c] != 1) {
                         RemoveWall(r-1, c, "Up"); 
                         remaining--;
                         visited[r,c] = 1;
-                        print("Up carve! Remaining is: " + remaining);
                     }
                 }
                 // Down
                 else if (choice == 1 && r > 0) {
+                    // Always move to cell
                     r--;
-                    print("Down!");
+                    // If not visited, also carve
                     if (visited[r,c] != 1){
                         RemoveWall(r+1, c, "Down"); 
                         remaining--; 
                         visited[r,c] = 1; 
-                        print("Down carve! Remaining is: " + remaining);
                     }
                 }
                 // Left
                 else if (choice == 2 && c > 0) {
+                    // Always move to cell
                     c--;
-                    print("Left!");
+                    // If not visited, also carve
                     if (visited[r,c] != 1) {
                         RemoveWall(r, c+1, "Left"); 
                         remaining--;
                         visited[r,c] = 1;
-                        print("Left carve! Remaining is: " + remaining);
                     }       
                 }
                 // Right
                 else if (choice == 3 && c < rows-1) {
+                    // Always move to cell
                     c++;
-                    print("Right!");
+                    // If not visited, also carve
                     if (visited[r,c] != 1){
                         RemoveWall(r, c-1, "Right"); 
                         remaining--; 
                         visited[r,c] = 1;
-                        print("Right carve! Remaining is: " + remaining);
                     } 
                 }
-
             }
 
+        }
+
+        public void Wilsons(int cols, int rows)
+        {
+            print("Start");
+            MakeGrid(cols, rows);
+            
+            // Choose random point to start
+            int r = UnityEngine.Random.Range(0, rows);
+            int c = UnityEngine.Random.Range(0, cols);
+            print("r: " + r + ", c: " + c);
+            int[,] visited = new int[rows,cols];
+            // Set random cell as IN
+            visited[r,c] = 1;
+            print("visited[r,c]: " + visited[r,c]);
+
+            // Count nr of remaining cells
+            int remaining = rows*cols-1;
+            print("remaining: " + remaining);
+
+            while (remaining > 0) {
+                // For each cell in RandomWalk perform carve
+                Step[] walkArray = RandomWalk(rows, cols, visited).ToArray();
+                remaining--;
+                /*foreach (Step step in walkArray) {
+                    RemoveWall(step.x,step.y,step.dir);
+                    visited[step.x,step.y] = 1;
+                    remaining--;
+                }*/
+            }
+        }
+
+        private List<Step> RandomWalk(int rows, int cols, int[,] visited) {
+            print("Start randomwalk");
+            int r, c = 0;
+            List<Step> path = new List<Step>();
+            // Loop until random cell is selected that is not in the maze (i.e. visited)
+            do {
+                r = UnityEngine.Random.Range(0, rows-1);
+                c = UnityEngine.Random.Range(0, cols-1);
+            }
+            while (visited[r,c] == 1);
+            print("Randomwalk r: " + r + ", c: " + c);
+            // Initialize list of visited cells in random walk
+            bool walking = true;
+            while (walking) {
+                print("keep walking");
+                // Be optimistic: next move will be visited cell
+                walking = false;
+                // Pick random direction
+                int choice = UnityEngine.Random.Range(0,4);
+                print("dir choice: " + choice);
+                // Check for chosen direction whether it reaches a valid cell
+                // Up
+                if (choice  == 0 && r < rows-1) {
+                    path.Add(new Step(r,c,"Up"));
+                    print("path.add r: " + r + ", c: " + c + ", dir: Up");
+                    // If that cell already in maze (i.e. visited), break out of loop as we've finished walk
+                    if(visited[r+1,c] == 1) {
+                        print("visited is true for r w/o +1: " + r + " and c: " + c);
+                        break;
+                    }
+                    // Else, set neighbour to be current cell and continue walking
+                    else {
+                        r++;
+                        walking = true;
+                        continue;
+                    }
+                }
+                // Down
+                else if (choice == 1 && r > 0) {
+                    path.Add(new Step(r,c,"Down"));
+                    print("path.add r: " + r + ", c: " + c + ", dir: Down");
+                    // If that cell already in maze (i.e. visited), break out of loop as we've finished walk
+                    if(visited[r-1,c] == 1) {
+                        print("visited is true for r w/o -1: " + r + " and c: " + c);
+                        break;
+                    }
+                    // Else, set neighbour to be current cell and continue walking
+                    else {
+                        r--;
+                        walking = true;
+                        continue;
+                    }
+                }
+                // Left
+                else if (choice == 2 && c > 0) {
+                    path.Add(new Step(r,c,"Left"));
+                    print("path.add r: " + r + ", c: " + c + ", dir: Left");
+                    // If that cell already in maze (i.e. visited), break out of loop as we've finished walk
+                    if(visited[r,c-1] == 1) {
+                        print("visited is true for r: " + r + " and c w/o -1: " + c);
+                        break;
+                    }
+                    // Else, set neighbour to be current cell and continue walking
+                    else {
+                        c--;
+                        walking = true;
+                        continue;
+                    }
+                }
+                // Right
+                else if (choice == 3 && c < rows-1) {
+                    path.Add(new Step(r,c,"Right"));
+                    print("path.add r: " + r + ", c: " + c + ", dir: Right");
+                    // If that cell already in maze (i.e. visited), break out of loop as we've finished walk
+                    if(visited[r,c+1] == 1) {
+                        print("visited is true for r: " + r + " and c w/o +1: " + c);
+                        break;
+                    }
+                    // Else, set neighbour to be current cell and continue walking
+                    else {
+                        c++;
+                        walking = true;
+                        continue;
+                    }
+                }
+                
+            }
+            print("path[0]: " + path[0]);
+            return path;
         }
 
         public void SideWinder(int cols=15, int rows=15)
