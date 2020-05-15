@@ -45,17 +45,16 @@ namespace MazeGenerator.Assest.Scripts {
         }
 
         public void BinaryTree(int cols=15, int rows=10) {
-            print("Bin!");
             // Make grid
             MakeGrid(cols, rows);
             // For each cell carve either north or east
             for (int r=0; r < rows; r++) {
                 for (int c=0; c < cols; c++) {
                     float choice = UnityEngine.Random.Range(0f,1f);
-                    if (choice < 0.5 && r < rows-1) {RemoveWall(r, c, "Up"); }
-                    else if (choice < 0.5 && c < cols-1) {RemoveWall(r, c, "right"); }
-                    else if (choice >= 0.5 && c < cols-1) {RemoveWall(r, c, "right"); }
-                    else if (choice >= 0.5 && r < rows-1) {RemoveWall(r, c, "up"); }
+                    if (choice < 0.5 && r < rows-1) { RemoveWall(r, c, "Up"); }
+                    else if (choice < 0.5 && c < cols-1) { RemoveWall(r, c, "right"); }
+                    else if (choice >= 0.5 && c < cols-1) { RemoveWall(r, c, "right"); }
+                    else if (choice >= 0.5 && r < rows-1) { RemoveWall(r, c, "up"); }
                 }
             }
         }
@@ -84,10 +83,7 @@ namespace MazeGenerator.Assest.Scripts {
                     // Always move to cell
                     r++;
                     // If not visited, also carve
-                    if(visited[r,c] != 1) {
-                        RemoveWall(r-1, c, "Up"); 
-                        remaining--;
-                        visited[r,c] = 1;
+                    if(visited[r,c] != 1) { RemoveWall(r-1, c, "Up"); remaining--; visited[r,c] = 1;
                     }
                 }
                 // Down
@@ -95,10 +91,7 @@ namespace MazeGenerator.Assest.Scripts {
                     // Always move to cell
                     r--;
                     // If not visited, also carve
-                    if (visited[r,c] != 1){
-                        RemoveWall(r+1, c, "Down"); 
-                        remaining--; 
-                        visited[r,c] = 1; 
+                    if (visited[r,c] != 1){ RemoveWall(r+1, c, "Down"); remaining--; visited[r,c] = 1; 
                     }
                 }
                 // Left
@@ -106,10 +99,7 @@ namespace MazeGenerator.Assest.Scripts {
                     // Always move to cell
                     c--;
                     // If not visited, also carve
-                    if (visited[r,c] != 1) {
-                        RemoveWall(r, c+1, "Left"); 
-                        remaining--;
-                        visited[r,c] = 1;
+                    if (visited[r,c] != 1) { RemoveWall(r, c+1, "Left"); remaining--; visited[r,c] = 1;
                     }       
                 }
                 // Right
@@ -117,17 +107,14 @@ namespace MazeGenerator.Assest.Scripts {
                     // Always move to cell
                     c++;
                     // If not visited, also carve
-                    if (visited[r,c] != 1){
-                        RemoveWall(r, c-1, "Right"); 
-                        remaining--; 
-                        visited[r,c] = 1;
+                    if (visited[r,c] != 1){ RemoveWall(r, c-1, "Right"); remaining--; visited[r,c] = 1;
                     } 
                 }
             }
 
         }
 
-        public void Wilsons(int cols, int rows)
+        /*public void Wilsons(int cols, int rows)
         {
             print("Start");
             MakeGrid(cols, rows);
@@ -153,7 +140,44 @@ namespace MazeGenerator.Assest.Scripts {
                     RemoveWall(step.x,step.y,step.dir);
                     visited[step.x,step.y] = 1;
                     remaining--;
-                }*/
+                }
+            }
+        }*/
+
+        public void RecursiveBacktracker(int cols, int rows) {
+            // Make grid
+            MakeGrid(cols, rows);
+
+            // Choose random point to start
+            int r = UnityEngine.Random.Range(0, rows);
+            int c = UnityEngine.Random.Range(0, cols);
+
+            // Initialize matrix of visited cells
+            // Includes backtracked direction
+            int[,] visited = new int[rows,cols];
+            visited[r,c] = 1;
+            CarvePassagesFrom(r,c, cols, rows, visited);    
+        }
+
+        void reshuffle(string[] texts) {
+            // Knuth shuffle algorithm :: courtesy of Wikipedia :)
+            for (int t = 0; t < texts.Length; t++ ) {
+                string tmp = texts[t];
+                int r = UnityEngine.Random.Range(t, texts.Length);
+                texts[t] = texts[r];
+                texts[r] = tmp;
+            }
+        }
+
+        private void CarvePassagesFrom(int r, int c, int cols, int rows, int[,] visited) {
+            // Create shuffled list of directions
+            string[] directions = new string[4]{"Up", "Down", "Left", "Right"};
+            reshuffle(directions);
+            foreach (string dir in directions) {
+                if (dir == "Up" && r < rows-1 && visited[r+1, c] == 0) { RemoveWall(r, c, "Up"); r++; visited[r,c] = 1; CarvePassagesFrom(r,c, cols, rows, visited);}
+                else if (dir == "Down" && r > 0 && visited[r-1, c] == 0) { RemoveWall(r, c, "Down"); r--; visited[r,c] = 1; CarvePassagesFrom(r,c, cols, rows, visited);}
+                else if (dir == "Left" && c > 0 && visited[r, c-1] == 0) { RemoveWall(r, c, "Left"); c--; visited[r,c] = 1; CarvePassagesFrom(r,c, cols, rows, visited);}
+                else if (dir == "Right" && c < cols-1 && visited[r, c+1] == 0) { RemoveWall(r, c, "Right"); c++; visited[r,c] = 1; CarvePassagesFrom(r,c, cols, rows, visited);}
             }
         }
 
