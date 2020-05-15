@@ -49,6 +49,9 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             if (alg == 1) { maze_gen.AldousBroder(cols, rows); }
             if (alg == 2) { maze_gen.SideWinder(cols, rows); }
             if (alg == 3) { maze_gen.Wilsons(cols, rows); }
+
+            // Fill maze with color
+            // maze_gen.flood();
         }
 
     }

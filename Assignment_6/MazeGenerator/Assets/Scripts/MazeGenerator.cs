@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace MazeGenerator.Assest.Scripts {
 
@@ -19,6 +20,7 @@ namespace MazeGenerator.Assest.Scripts {
     
     public class MazeGenerator : MonoBehaviour
     {
+        [SerializeField] Gradient gradient;
         public GameObject cell_prefab;
         public GameObject wall_prefab;
         
@@ -35,17 +37,21 @@ namespace MazeGenerator.Assest.Scripts {
 
             // Find actual grid object
             grid = gameObject.transform.Find("Grid").gameObject;
+
+            // Add box collider to grid
+            gameObject.AddComponent<BoxCollider2D>();
+            gameObject.GetComponent<BoxCollider2D>().size = grid.GetComponent<RectTransform>().localScale;
+            gameObject.GetComponent<BoxCollider2D>().offset = grid.GetComponent<RectTransform>().localScale / 2;
         }
 
-
-        // Start is called before the first frame update
-        void Start()
-        {
+        public void OnMouseDown() {
+            // Find which cell was clicked for seeding
+            Vector2 mouse_pos = mouse2Cell(Input.mousePosition.x, Input.mousePosition.y);
+            flood((int) mouse_pos.x, (int) mouse_pos.y);
 
         }
 
         public void BinaryTree(int cols=15, int rows=10) {
-            print("Bin!");
             // Make grid
             MakeGrid(cols, rows);
             // For each cell carve either north or east
@@ -297,6 +303,17 @@ namespace MazeGenerator.Assest.Scripts {
             // Add cells and walls
             cells = make_cells(rows, cols, offset);
             walls = make_walls(rows+1, cols+1, offset);
+
+            // Scale box
+            gameObject.GetComponent<BoxCollider2D>().size = grid.GetComponent<RectTransform>().localScale * grid_size;
+        }
+
+        private bool HasWall (int x, int y, string dir) {
+            if (dir.ToLower()=="up") { return walls[x+1, y, 0].activeSelf; }
+            if (dir.ToLower()=="right") { return walls[x, y+1, 1].activeSelf; }
+            if (dir.ToLower()=="down") { return walls[x, y, 0].activeSelf; }
+            if (dir.ToLower()=="left") { return walls[x, y, 1].activeSelf; }
+            return true;
         }
 
         private void RemoveWall (int x, int y, string dir) {
@@ -308,8 +325,8 @@ namespace MazeGenerator.Assest.Scripts {
 
         private GameObject[,] make_cells (int rows, int cols, Vector3 offset) {
             GameObject[,] cell_grid = new GameObject[rows, cols];
-            for (int r=0; r < rows; r++) {
-                for (int c=0; c < cols; c++) {
+            for (int r=0; r < rows; ++r) {
+                for (int c=0; c < cols; ++c) {
                     GameObject cell = (GameObject) Instantiate(cell_prefab);
                     cell.transform.SetParent(grid.transform);
                     cell.transform.localPosition = new Vector3(c, r, 0) + offset;
@@ -322,8 +339,8 @@ namespace MazeGenerator.Assest.Scripts {
 
         private GameObject[,,] make_walls (int rows, int cols, Vector3 offset) {
             GameObject[,,] wall_grid = new GameObject[rows, cols, 2];
-            for (int r=0; r < rows; r++) {
-                for (int c=0; c < cols; c++) {
+            for (int r=0; r < rows; ++r) {
+                for (int c=0; c < cols; ++c) {
                     if (c < cols-1) {
                         GameObject h_wall = (GameObject) Instantiate(wall_prefab);
                         h_wall.transform.SetParent(grid.transform);
@@ -346,9 +363,9 @@ namespace MazeGenerator.Assest.Scripts {
 
         private void clear_elements(GameObject[,,] list) {
             if(list != null){
-                for(int i=0; i < list.GetLength(0); i++) {
-                    for(int j=0; j < list.GetLength(1); j++) {
-                        for (int k=0; k < list.GetLength(2); k++) {
+                for(int i=0; i < list.GetLength(0); ++i) {
+                    for(int j=0; j < list.GetLength(1); ++j) {
+                        for (int k=0; k < list.GetLength(2); ++k) {
                             if (list[i, j, k] != null) {
                                 Destroy(list[i, j, k].gameObject);
                             }
@@ -360,12 +377,81 @@ namespace MazeGenerator.Assest.Scripts {
 
         private void clear_elements(GameObject[,] list) {
             if(list != null){
-                for(int i=0; i < list.GetLength(0); i++) {
-                    for(int j=0; j < list.GetLength(1); j++) {
+                for(int i=0; i < list.GetLength(0); ++i) {
+                    for(int j=0; j < list.GetLength(1); ++j) {
                         if (list[i, j] != null) {
                             Destroy(list[i, j].gameObject);
                         }
                     }
+                }
+            }
+        }
+
+        private Vector2 mouse2Cell(float x, float y) {
+            // Create output vector
+            Vector2 cell_idx = new Vector2();
+            // Transform screen coords to rect coords
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                gameObject.GetComponent<RectTransform>(),
+                new Vector2(x, y),
+                GameObject.Find("UICamera").GetComponent<Camera>(),
+                out cell_idx
+                );
+            // Shift pixels so bottom left becomes origin
+            cell_idx += gameObject.GetComponent<BoxCollider2D>().size / 2;
+            // Scale to grid
+            cell_idx /= gameObject.GetComponent<BoxCollider2D>().size / grid_size;
+            // Floor to get integers
+            cell_idx = new Vector2(Mathf.FloorToInt(cell_idx.x), Mathf.FloorToInt(cell_idx.y));
+            return cell_idx;
+        }
+
+        private float[,] compute_dist_grid(int x, int y, int dist=0, float[,] dist_grid=null) {
+            // Make distance grid
+            if (dist_grid == null) { dist_grid = new float[(int) grid_size.x, (int) grid_size.y]; }
+            // Fill current dist in on pos
+            dist_grid[x, y] = dist;
+            // For each valid move, recursively fill in values
+            string[] dirs = new string[4] {"up", "right", "down", "left"};
+            foreach (string dir in dirs) {
+                // Check if move is not blocked by wall
+                if (HasWall(x, y, dir)) {continue; }
+                // Set new pos
+                int new_x = x;
+                int new_y = y;
+                if (dir == "up") {new_x += 1;}
+                if (dir == "right") {new_y += 1;}
+                if (dir == "down") {new_x -= 1;}
+                if (dir == "left") {new_y -= 1;}
+                // Check if position has been reached yet
+                if (dist_grid[new_x, new_y] != 0f && dist_grid[new_x, new_y] <= dist) {continue; }
+                // Recursively fill rest
+                compute_dist_grid(new_x, new_y, dist+1, dist_grid);
+            }
+            // Reset original point to dist of 0
+            if (dist == 0) { dist_grid[x, y] = dist; }
+            // Return grid
+            return dist_grid;
+        }
+
+        public void flood(int x=0, int y=0) {
+            // Compute distances
+            float[,] dist_grid = compute_dist_grid(y, x);
+            // dist_grid[y, x] = 0;
+
+            // Get max dist
+            float dist_max = 0;
+            for(int r=0; r < cells.GetLength(0); ++r) {
+                for(int c=0; c < cells.GetLength(1); ++c) {
+                    if (dist_grid[r, c] > dist_max) { dist_max = dist_grid[r, c]; }
+                }
+            }
+
+            // Color based on normalized distance and gradient
+            for(int r=0; r < cells.GetLength(0); ++r) {
+                for(int c=0; c < cells.GetLength(1); ++c) {
+                    Color color = gradient.Evaluate(dist_grid[r, c] / dist_max);
+                    cells[r, c].GetComponent<SpriteRenderer>().color = color;
                 }
             }
         }
