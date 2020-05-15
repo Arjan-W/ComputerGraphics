@@ -30,7 +30,8 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             algorithm_options.AddOptions(new List<string> {"Binary Tree"});
             algorithm_options.AddOptions(new List<string> {"Aldous-Broder"});
             algorithm_options.AddOptions(new List<string> {"Sidewinder"});
-            algorithm_options.AddOptions(new List<string> {"Wilson's"});
+            algorithm_options.AddOptions(new List<string> {"Recursive Backtracker"});
+            //algorithm_options.AddOptions(new List<string> {"Wilson's"});
 
             // Add callback to generate
             generate.transform.Find("GenerateButton").GetComponent<Button>().onClick.AddListener(delegate() {Start();} );
@@ -48,10 +49,10 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             if (alg == 0) { maze_gen.BinaryTree(cols, rows); }
             if (alg == 1) { maze_gen.AldousBroder(cols, rows); }
             if (alg == 2) { maze_gen.SideWinder(cols, rows); }
-            if (alg == 3) { maze_gen.Wilsons(cols, rows); }
-
-            // Fill maze with color
-            // maze_gen.flood();
+            if (alg == 3) { maze_gen.RecursiveBacktracker(cols,rows); }
+            
+            // Flood maze
+            maze_gen.flood();
         }
 
     }
