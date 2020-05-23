@@ -2154,6 +2154,8 @@ MonoBehaviour:
     type: 3}
   wall_prefab: {fileID: 7422602322641942048, guid: e07fec61d682ff74cbb82fc6ae1b788b,
     type: 3}
+  path_prefab: {fileID: 7484945375712256539, guid: 679d5be85a796da45b7b5b8c2c8603d3,
+    type: 3}
 --- !u!1 &1311041949
 GameObject:
   m_ObjectHideFlags: 0

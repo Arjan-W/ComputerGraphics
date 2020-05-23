@@ -53,6 +53,9 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             
             // Flood maze
             maze_gen.flood();
+
+            // Draw longest path
+            maze_gen.DrawPath();
         }
 
     }
