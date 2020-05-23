@@ -84,8 +84,8 @@ namespace MazeGenerator.Assest.Scripts {
 
             // Initialize remaining nr of cells
             int remaining = rows*cols-1;
-            // Loop until all cells visited
-            
+
+            // Loop until all cells visited or max iter is reached
             while (remaining > 0) {
                 // Pick random direction
                 float choice = UnityEngine.Random.Range(0, 4);
@@ -94,32 +94,28 @@ namespace MazeGenerator.Assest.Scripts {
                     // Always move to cell
                     r++;
                     // If not visited, also carve
-                    if(visited[c, r] != 1) { RemoveWall(c, r-1, "Up"); remaining--; visited[c, r] = 1;
-                    }
+                    if(visited[c, r] != 1) { RemoveWall(c, r-1, "Up"); remaining--; visited[c, r] = 1; }
                 }
                 // Down
                 else if (choice == 1 && r > 0) {
                     // Always move to cell
                     r--;
                     // If not visited, also carve
-                    if (visited[c, r] != 1){ RemoveWall(c, r+1, "Down"); remaining--; visited[c, r] = 1; 
-                    }
+                    if (visited[c, r] != 1){ RemoveWall(c, r+1, "Down"); remaining--; visited[c, r] = 1; }
                 }
                 // Left
                 else if (choice == 2 && c > 0) {
                     // Always move to cell
                     c--;
                     // If not visited, also carve
-                    if (visited[c, r] != 1) { RemoveWall(c+1, r, "Left"); remaining--; visited[c, r] = 1;
-                    }       
+                    if (visited[c, r] != 1) { RemoveWall(c+1, r, "Left"); remaining--; visited[c, r] = 1; }       
                 }
                 // Right
-                else if (choice == 3 && c < rows-1) {
+                else if (choice == 3 && c < cols-1) {
                     // Always move to cell
                     c++;
                     // If not visited, also carve
-                    if (visited[c, r] != 1){ RemoveWall(c-1, r, "Right"); remaining--; visited[c, r] = 1;
-                    } 
+                    if (visited[c, r] != 1){ RemoveWall(c-1, r, "Right"); remaining--; visited[c, r] = 1; } 
                 }
             }
 
@@ -315,8 +311,8 @@ namespace MazeGenerator.Assest.Scripts {
             // Store grid size
             grid_size = new Vector2Int(cols, rows);
             // Scales the grid to fit all cells in the image
-            float x = size[0] / cols;
-            float y = size[1] / rows;
+            float x = size.x / cols;
+            float y = size.y / rows;
             float s = Math.Min(x, y);
             offset = new Vector3(0, 0, 0);
             if (x < y) { offset = new Vector3(0, (size[1] - s * rows) / s / 2, 0); }
@@ -330,8 +326,8 @@ namespace MazeGenerator.Assest.Scripts {
             clear_elements(walls);
 
             // Add cells and walls
-            cells = make_cells(rows, cols, offset);
-            walls = make_walls(rows+1, cols+1, offset);
+            cells = make_cells(cols, rows, offset);
+            walls = make_walls(cols+1, rows+1, offset);
 
             // Scale box
             gameObject.GetComponent<BoxCollider2D>().size = grid.GetComponent<RectTransform>().localScale * grid_size;

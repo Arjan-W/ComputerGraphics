@@ -49,7 +49,7 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             if (alg == 0) { maze_gen.BinaryTree(cols, rows); }
             if (alg == 1) { maze_gen.AldousBroder(cols, rows); }
             if (alg == 2) { maze_gen.SideWinder(cols, rows); }
-            if (alg == 3) { maze_gen.RecursiveBacktracker(cols,rows); }
+            if (alg == 3) { maze_gen.RecursiveBacktracker(cols, rows); }
             
             // Flood maze
             maze_gen.flood();
