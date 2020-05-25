@@ -27,11 +27,7 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             // Add algorithm options
             Dropdown algorithm_options = algorithm.transform.Find("Algorithms").GetComponent<Dropdown>();
             algorithm_options.ClearOptions();
-            algorithm_options.AddOptions(new List<string> {"Binary Tree"});
-            algorithm_options.AddOptions(new List<string> {"Aldous-Broder"});
-            algorithm_options.AddOptions(new List<string> {"Sidewinder"});
-            algorithm_options.AddOptions(new List<string> {"Recursive Backtracker"});
-            //algorithm_options.AddOptions(new List<string> {"Wilson's"});
+            algorithm_options.AddOptions(new List<string> {"Binary Tree", "Aldous-Broder", "Sidewinder", "Recursive Backtracker"});
 
             // Add callback to generate
             generate.transform.Find("GenerateButton").GetComponent<Button>().onClick.AddListener(delegate() {Start();} );
@@ -58,10 +54,12 @@ namespace MazeGenerator.Assest.Scripts.UIController{
             maze_gen.DrawPath();
 
             // Print features
-            maze_gen.CalculateDeadEnds();
-            maze_gen.CalculateTwistiness();
-            maze_gen.CalculateDirectness();
-            maze_gen.CalculateIntersections();
+            float[] features = maze_gen.CalculateFeatures();
+            Debug.Log($"Percentage of dead ends: {features[1].ToString()}%");
+            Debug.Log($"Percentage of twisties: {features[2].ToString()}%");
+            Debug.Log($"Percentage of directies: {features[3].ToString()}%");
+            Debug.Log($"Percentage of intersections: {features[4].ToString()}%");
+            Debug.Log($"Length of longest path: {features[0].ToString()}");
         }
 
     }

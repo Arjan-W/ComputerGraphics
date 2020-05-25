@@ -568,104 +568,64 @@ namespace MazeGenerator.Assest.Scripts {
             return path;
         }
 
-        // Feature: dead ends
-        public void CalculateDeadEnds() {
-            int deadEnds = 0;
+        public float[] CalculateFeatures() {
+            float deadEnds = 0;
+            float twisties = 0;
+            float directies = 0;
+            float intersections = 0;
+            float longsies = path.Count;
 
+            // Loop over cells and compute features
             for(int c=0; c < cells.GetLength(0); ++c) {
                 for(int r=0; r < cells.GetLength(1); ++r) {
-                    // if dead end, increase counter
-                    if(isDeadEnd(r,c)) {
-                        deadEnds++;
-                    }
+                    if(isDeadEnd(c, r)) { ++deadEnds; }
+                    if(isTwisty(c, r)) { ++twisties; }
+                    if(isDirect(c, r)) { ++directies; }
+                    if(isIntersect(c, r)) { ++intersections; }
                 }
             }
-            float percentage = (float)deadEnds/(float)(cells.GetLength(0)*cells.GetLength(1))*100;
-            Debug.Log("Percentage of dead ends: " + percentage.ToString() + "%");
+            
+            // Convert to percentages
+            int nr_of_cells = cells.GetLength(0) * cells.GetLength(1);
+            deadEnds = deadEnds * 100 / nr_of_cells;
+            twisties = twisties * 100 / nr_of_cells;
+            directies = directies * 100 / nr_of_cells;
+            intersections = intersections * 100 / nr_of_cells;
 
+            // Return results
+            return new float[] {longsies, deadEnds, twisties, directies, intersections};
         }
 
         private bool isDeadEnd(int x, int y) {
             // if exactly one direction to go to
             int count = 0;
-            if (walls[x, y+1, 0].activeSelf) { count++; }
-            if (walls[x+1, y, 1].activeSelf) { count++; }
-            if (walls[x, y, 0].activeSelf) { count++; }
-            if (walls[x, y, 1].activeSelf) { count++; }
-            return count == 1;
-        }
-
-        // Feature: twistiness
-        public void CalculateTwistiness() {
-            int twisties = 0;
-
-            for(int c=0; c < cells.GetLength(0); ++c) {
-                for(int r=0; r < cells.GetLength(1); ++r) {
-                    // if dead end, increase counter
-                    if(isTwisty(r,c)) {
-                        twisties++;
-                    }
-                }
-            }
-            float percentage = (float)twisties/(float)(cells.GetLength(0)*cells.GetLength(1))*100;
-            Debug.Log("Percentage of twisty cells: " + percentage.ToString() + "%");
-
+            if (HasWall(x, y, "up")) { count++; }
+            if (HasWall(x, y, "right")) { count++; }
+            if (HasWall(x, y, "down")) { count++; }
+            if (HasWall(x, y, "left")) { count++; }
+            return count == 3;
         }
 
         private bool isTwisty(int x, int y) {
             // if (up xor bottom) and (left xor right) 
             // xor because it needs to be a passage, i.e. it needs two walls in a not-opposite direction
-            return (walls[x, y+1, 0].activeSelf ^ walls[x, y, 0].activeSelf) && (walls[x+1, y, 1].activeSelf ^ walls[x, y, 1].activeSelf);
-        }
-
-        // Feature: directness
-        public void CalculateDirectness() {
-            int directies = 0;
-
-            for(int c=0; c < cells.GetLength(0); ++c) {
-                for(int r=0; r < cells.GetLength(1); ++r) {
-                    // if dead end, increase counter
-                    if(isDirect(r,c)) {
-                        directies++;
-                    }
-                }
-            }
-            float percentage = (float)directies/(float)(cells.GetLength(0)*cells.GetLength(1))*100;
-            Debug.Log("Percentage of direct cells: " + percentage.ToString() + "%");
-
+            return (HasWall(x, y, "up") ^ HasWall(x, y, "down")) && (HasWall(x, y, "left") ^ HasWall(x, y, "Right"));
         }
 
         private bool isDirect(int x, int y) {
             // if (up and bottom) xor (left and right) 
             // xor because it needs to be a passage, i.e. it needs two walls in an opposite direction but no others
-            return (walls[x, y+1, 0].activeSelf && walls[x, y, 0].activeSelf) ^ (walls[x+1, y, 1].activeSelf && walls[x, y, 1].activeSelf);
-        }
-
-        // Feature: directness
-        public void CalculateIntersections() {
-            int intersections = 0;
-
-            for(int c=0; c < cells.GetLength(0); ++c) {
-                for(int r=0; r < cells.GetLength(1); ++r) {
-                    // if dead end, increase counter
-                    if(isIntersect(r,c)) {
-                        intersections++;
-                    }
-                }
-            }
-            float percentage = (float)intersections/(float)(cells.GetLength(0)*cells.GetLength(1))*100;
-            Debug.Log("Percentage of intersections: " + percentage.ToString() + "%");
-
+            return (HasWall(x, y, "up") && HasWall(x, y, "down") && !(HasWall(x, y, "left") || HasWall(x, y, "Right"))) ^ (HasWall(x, y, "left") && HasWall(x, y, "Right") && !(HasWall(x, y, "up") || HasWall(x, y, "down")));
         }
 
         private bool isIntersect(int x, int y) {
             // if more than two directions to go to
             int count = 0;
-            if (walls[x, y+1, 0].activeSelf) { count++; }
-            if (walls[x+1, y, 1].activeSelf) { count++; }
-            if (walls[x, y, 0].activeSelf) { count++; }
-            if (walls[x, y, 1].activeSelf) { count++; }
-            return count > 2;}
+            if (HasWall(x, y, "up")) { count++; }
+            if (HasWall(x, y, "right")) { count++; }
+            if (HasWall(x, y, "down")) { count++; }
+            if (HasWall(x, y, "left")) { count++; }
+            return count < 2;}
 
     }
 }
